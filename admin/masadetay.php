@@ -41,7 +41,7 @@
                 </thead>
                 <tbody>
                     <?php 
-                        $gelenurunlersorgusu = $db -> prepare("SELECT * FROM urunler INNER JOIN siparisler ON urunler.urun_id = siparisler.urun_id WHERE siparisler.masa_id=$masa_id");
+                        $gelenurunlersorgusu = $db -> prepare("SELECT * FROM masalar INNER JOIN urunler INNER JOIN siparisler ON urunler.urun_id = siparisler.urun_id WHERE siparisler.masa_id=$masa_id AND masalar.masa_detay != 'BOS'");
                         $gelenurunlersorgusu -> execute();
                         $sayi = 1;
                         $toplam =0;
@@ -66,5 +66,7 @@
                     </tr>
                 </thead>
             </table>
-        </div>   
+        </div>  
     </div>   
+    <div class="masadetay"> <b>Müşteri Notu: </b> <?php echo $masadeger["masa_detay"]?></div> 
+

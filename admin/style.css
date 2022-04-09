@@ -63,3 +63,16 @@
     margin-right: 30px;
 }
 
+.masadetay{
+    display: block;
+    width: 100%;
+    height:auto;
+    padding:10px;
+    margin-top: 50px;
+    font-size: 18px;
+    font-family: 'Oswald', sans-serif;
+    color: #180A0A;
+    border-top: 2px solid #FA9628;
+
+}
+

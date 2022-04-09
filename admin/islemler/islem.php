@@ -106,6 +106,7 @@ if (isset($_POST['profilkaydet'])) {
 
 if(isset($_POST["siparisekle"])){
     $masa_id = $_POST["masa_id"];
+    $masa_id_encode = base64_encode($_POST["masa_id"]);
     $siparisekle = $db->prepare("INSERT INTO siparisler SET 
         masa_id=:masa_id,
         urun_id=:urun_id,
@@ -118,12 +119,13 @@ if(isset($_POST["siparisekle"])){
     ));
 
     if ($ekle) {
-        header("Location:../../index.php?masa_id=$masa_id");
+        header("Location:../../index.php?masa_id=$masa_id_encode");
     }
 }
 
 if(isset($_POST["anasayfaurunsil"])){
     $masa_id = $_POST["masa_id"];
+    $masa_id_encode = base64_encode($_POST["masa_id"]);
     $urun_id = $_POST["urun_id"];
     $siparis_id = $_POST["siparis_id"];
     $urunsil = $db->prepare("DELETE FROM siparisler WHERE masa_id=:masa_id AND urun_id=:urun_id AND siparis_id=:siparis_id");
@@ -134,11 +136,12 @@ if(isset($_POST["anasayfaurunsil"])){
     ]);
 
     if($kontrol){
-        header("Location:../../index.php?masa_id=$masa_id");
+        header("Location:../../index.php?masa_id=$masa_id_encode");
     }
 }
 if(isset($_POST["odemeurunsil"])){
     $masa_id = $_POST["masa_id"];
+    $masa_id_encode = base64_encode($_POST["masa_id"]);
     $urun_id = $_POST["urun_id"];
     $siparis_id = $_POST["siparis_id"];
     $urunsil = $db->prepare("DELETE FROM siparisler WHERE masa_id=:masa_id AND urun_id=:urun_id AND siparis_id=:siparis_id");
@@ -149,12 +152,14 @@ if(isset($_POST["odemeurunsil"])){
     ]);
 
     if($kontrol){
-        header("Location:../../odeme.php?masa_id=$masa_id");
+        header("Location:../../odeme.php?masa_id=$masa_id_encode");
     }
 }
 
 if(isset($_POST["odemeisleminitamamla"])){
     $masa_id        =   $_POST["masa_id"];
+    $masa_id_encode = base64_encode($_POST["masa_id"]);
+    $masa_detay       =   $_POST["masa_detay"];
     $kart_adi       =   $_POST["kart_adi"];
     $kart_numarasi  =   $_POST["kart_numarasi"];
     $kart_ay        =   $_POST["kart_ay"];
@@ -166,41 +171,45 @@ if(isset($_POST["odemeisleminitamamla"])){
         if($odemesekli=="KrediKarti"){
             if(!$kart_adi=="" && !$kart_numarasi=="" && !$kart_ay=="" && !$kart_yil=="" && !$kart_cvv==""){
                 $odemesorgusu = $db->prepare("UPDATE masalar SET 
+                masa_detay=:masa_detay,
                 kart_adi=:kart_adi,
                 kart_numarasi=:kart_numarasi,
                 masa_durumu=:masa_durumu WHERE masa_id=:masa_id
                 ");
                 $guncelle = $odemesorgusu->execute([
+                'masa_detay' => $masa_detay,    
                 'kart_adi' => $kart_adi,
                 'kart_numarasi' => $kart_numarasi,
                 'masa_durumu' => "ÖDENDİ",
                 'masa_id' => $masa_id
                 ]);
                 if($guncelle){
-                    header("Location:../../odemetamamlandi.php?odeme=kredikarti");
+                    header("Location:../../odemetamamlandi.php?masa_id=$masa_id_encode&odeme=kredikarti");
                 }else{
-                    header("Location:../../odemetamamlanmadi.php");
+                    header("Location:../../odemetamamlanmadi.php?masa_id=$masa_id_encode");
                 }
             }else{
-                header("Location:../../odeme.php?masa_id=$masa_id&hata=eksikbilgi");
+                header("Location:../../odeme.php?masa_id=$masa_id_encode&hata=eksikbilgi");
             }
             
         }else if($odemesekli=="Nakit"){
             $odemesorgusu = $db->prepare("UPDATE masalar SET 
-            masa_durumu=:masa_durumu WHERE masa_id=:masa_id
+            masa_durumu=:masa_durumu,
+            masa_detay=:masa_detay WHERE masa_id=:masa_id
          ");
          $guncelle = $odemesorgusu->execute([
              'masa_durumu' => "NAKİT ÖDENECEK",
-             'masa_id' => $masa_id
+             'masa_id' => $masa_id,
+             'masa_detay' => $masa_detay 
          ]);
          if($guncelle){
-            header("Location:../../odemetamamlandi.php?odeme=nakit");
+            header("Location:../../odemetamamlandi.php?masa_id=$masa_id_encode&odeme=nakit");
          }else{
-            header("Location:../../odemetamamlanmadi.php");
+            header("Location:../../odemetamamlanmadi.php?masa_id=$masa_id_encode");
          }
         }
     }else{
-        header("Location:../../odeme.php?masa_id=$masa_id&hata=odemesekli");
+        header("Location:../../odeme.php?masa_id=$masa_id_encode&hata=odemesekli");
     }
 
     
@@ -208,7 +217,6 @@ if(isset($_POST["odemeisleminitamamla"])){
 
 if(isset($_GET["odendi"])){
     $masa_id = $_GET["masa_id"];
-
     $odemesorgusu = $db->prepare("UPDATE masalar SET 
         masa_durumu=:masa_durumu WHERE masa_id=:masa_id
      ");
@@ -228,11 +236,13 @@ if(isset($_GET["odendi"])){
 if(isset($_GET["temizle"])){
     $masa_id =  $_GET["masa_id"];
     $odemesorgusu = $db->prepare("UPDATE masalar SET 
+        masa_detay=:masa_detay,
         kart_adi=:kart_adi,
         kart_numarasi=:kart_numarasi,
         masa_durumu=:masa_durumu WHERE masa_id=:masa_id
      ");
      $guncelle = $odemesorgusu->execute([
+         'masa_detay' => "BOS",   
          'kart_adi' => "BOS",
          'kart_numarasi' => "BOS",
          'masa_durumu' => "BOS",

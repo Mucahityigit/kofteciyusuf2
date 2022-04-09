@@ -1,12 +1,4 @@
-<?php
-    include "header.php";
-    if($_GET["masa_id"]){
-        $masa_id = $_GET["masa_id"];
-    }
-    $urunlersorgusu = $db -> prepare("SELECT * FROM urunler");
-    $urunlersorgusu -> execute();
-    $urunler = $urunlersorgusu->fetchAll(PDO::FETCH_ASSOC);
- ?>
+<?php include "header.php"; ?>
     <div id="ustAciklama">Hoş Geldiniz. Aşağıdan Sipariş Verebilirsiniz.</div>
     <div id="container">
         <div id="urunlerAlani">
@@ -52,7 +44,7 @@
                     <span class="toplam"><?php echo $toplam ?> TL</span>
                 </div>
                 <?php if($gelenurunsayisi>0){?>
-                <a class="odeme" href="odeme.php?masa_id=<?php echo $masa_id?>">ÖDEME YAP</a>
+                <a class="odeme" href="odeme.php?masa_id=<?php echo base64_encode($masa_id)?>">ÖDEME YAP</a>
                 <?php } ?>
             </div>
             <div id="responsive">

@@ -1,6 +1,4 @@
-<?php
-    include "header.php"; ?>
-    
+<?php include "header.php";?>
     <?php 
         if(isset($_GET["odeme"])){
             if($_GET["odeme"]=="nakit"){?>

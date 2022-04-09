@@ -1,4 +1,11 @@
-<?php include "nedmin/baglan.php"; ?>
+<?php include "nedmin/baglan.php"; 
+    if($_GET["masa_id"]){
+        $masa_id = base64_decode($_GET["masa_id"]);
+    }
+    $urunlersorgusu = $db -> prepare("SELECT * FROM urunler");
+    $urunlersorgusu -> execute();
+    $urunler = $urunlersorgusu->fetchAll(PDO::FETCH_ASSOC);
+?>
 
 <!DOCTYPE html>
 <html lang="tr">
@@ -20,7 +27,7 @@
     <div id="header-container">
         <div id="header">
             <div id="logo-container">
-                <a id="logo" href="index.php?masa_id=1"><img src="resimler/kofteciyusuflogo.png" alt=""></a>
+                <a id="logo" href="index.php?masa_id=<?php echo base64_encode($masa_id) ?>"><img src="resimler/kofteciyusuflogo.png" alt=""></a>
             </div>
             <div id="search-container">
                 <form action="index.php" method="GET">
@@ -30,7 +37,7 @@
             </div>
             <div id="menu-container">
                 <ul id="menu-list">
-                    <li class="menu-item"><a class="menu-item-a" href="index.php">Ana Sayfa</a> </li>
+                    <li class="menu-item"><a class="menu-item-a" href="index.php?masa_id=<?php echo base64_encode($masa_id) ?>">Ana Sayfa</a> </li>
                     <li class="menu-item"><a class="menu-item-a" href="#">Ürünler</a> </li>
                     <li class="menu-item"><a class="menu-item-a" href="#">İletişim</a> </li>
                 </ul>
